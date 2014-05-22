@@ -1,0 +1,46 @@
+---
+  publishers:
+    # - Publishers.RabbitPublisher: 
+    #     host: 127.0.0.1
+    #     queue: log_queue
+    - Publishers.PrintPublisher
+    # - Publishers.ElasticPublisher
+  extractors: 
+    # - Extractors.Execute: 
+    #     type: hours
+    #     exec: "j = init"
+    #     eval: j
+    #     interval: 1
+    #     tags: 
+    #       - metrics
+    # - Extractors.Execute: 
+    #     type: pymetrics
+    #     init: "from lib.pymetrics import main as pymetrics"
+    #     eval: "pymetrics()"
+    #     interval: 1
+    #     tags: 
+    #       - metrics
+    #     filters: 
+    #       - Filters.MessageToFieldsFilter
+    # - Extractors.Log: 
+    #     type: nginx-access
+    #     path: /Users/manu/Downloads/logs/nginx.log
+    #     tags: 
+    #       - wadus
+    #       - blau
+    #     fake_timestamp: true
+    #     filters: 
+    #       - Filters.NginxFilter
+    #       - Filters.FakeTimestampFilter
+    - Extractors.Log: 
+        type: rails
+        path: /Users/manu/projects/octo/log/development.log
+        tags: 
+          - wadus
+          - blau
+        should_line_merge: true
+        break_only_before: "^Started"
+        fake_timestamp: true
+        filters: 
+          - Filters.RailsFilter
+          - Filters.FakeTimestampFilter

@@ -1,0 +1,5 @@
+sh
+pymongo
+pika
+pyyaml
+termcolor
