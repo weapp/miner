@@ -3,6 +3,7 @@ import platform
 from uuid import getnode
 import datetime
 from objectid import ObjectId
+import time
 
 
 _camel_pat = re.compile(r'([A-Z])')
@@ -59,7 +60,7 @@ class HashBuilder:
 
     def build(self, data=None):
         self.data = self.shared.copy()
-        self.data.setdefault("@timestamp", datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z"))
+        self.data.setdefault("@timestamp", '{0}{1:+06.2f}'.format(datetime.datetime.now().isoformat(), float(time.timezone) / 3600))
         if data is not None:
             self.data["@message"] = data
 
@@ -69,12 +70,6 @@ class HashBuilder:
     def dict(self):
         if isinstance(self.data["@message"], list):
             self.data["@message"] = "".join(self.data["@message"])
-        # if self.fake_timestamp:
-        #     ts = _timestamp_pat.search(self.data["@message"])
-        #     if ts:
-        #         self.data["@timestamp"] = date_time_parser.parse(ts.group(0))
-        # self.data["_id"] = str(ObjectId()._generate(self.data["@timestamp"]))
-        # self.data["@timestamp"] = self.data["@timestamp"].strftime("%Y-%m-%dT%H:%M:%S.000Z")#.isoformat()# + "Z" #strftime("T%H:%M:%SZ") #.isoformat()
         return self.data
 
     def has_data(self):
