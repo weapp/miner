@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from lib.utils import build_components, HashBuilder
+from shared.utils import build_components, HashBuilder
 
 class BaseExtractor:
     def __init__(self, conf):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from base_extractor import BaseExtractor
-from lib.utils import HashBuilder
+from shared.utils import HashBuilder
 import time
 
 class Execute(BaseExtractor):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from elasticsearch import Elasticsearch
-from lib.objectid import ObjectId
+from shared.objectid import ObjectId
 from pprint import pprint
 
 import logging

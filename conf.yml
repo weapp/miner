@@ -13,15 +13,15 @@
     #     interval: 1
     #     tags: 
     #       - metrics
-    # - Extractors.Execute: 
-    #     type: pymetrics
-    #     init: "from lib.pymetrics import main as pymetrics"
-    #     eval: "pymetrics()"
-    #     interval: 1
-    #     tags: 
-    #       - metrics
-    #     filters: 
-    #       - Filters.MessageToFieldsFilter
+    - Extractors.Execute: 
+        type: pymetrics
+        init: "from shared.pymetrics import main as pymetrics"
+        eval: "pymetrics()"
+        interval: 1
+        tags: 
+          - metrics
+        filters: 
+          - Filters.MessageToFieldsFilter
     # - Extractors.Log: 
     #     type: nginx-access
     #     path: /Users/manu/Downloads/logs/nginx.log
@@ -32,15 +32,15 @@
     #     filters: 
     #       - Filters.NginxFilter
     #       - Filters.FakeTimestampFilter
-    - Extractors.Log: 
-        type: rails
-        path: /Users/manu/projects/octo/log/development.log
-        tags: 
-          - wadus
-          - blau
-        should_line_merge: true
-        break_only_before: "^Started"
-        fake_timestamp: true
-        filters: 
-          - Filters.RailsFilter
-          - Filters.FakeTimestampFilter
+    # - Extractors.Log: 
+    #     type: rails
+    #     path: /Users/manu/projects/octo/log/development.log
+    #     tags: 
+    #       - wadus
+    #       - blau
+    #     should_line_merge: true
+    #     break_only_before: "^Started"
+    #     fake_timestamp: true
+    #     filters: 
+    #       - Filters.RailsFilter
+    #       - Filters.FakeTimestampFilter

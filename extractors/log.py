@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from base_extractor import BaseExtractor
-from lib.utils import build_component, HashBuilder
+from shared.utils import build_component, HashBuilder
 from sh import tail, touch, stat
 import re
 

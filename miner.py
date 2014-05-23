@@ -1,6 +1,6 @@
 import yaml
 from multiprocessing import Process
-from lib.utils import build_components
+from shared.utils import build_components
 
 if __name__ == '__main__':
     conf = yaml.load(open("conf.yml"))
