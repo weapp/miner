@@ -44,6 +44,8 @@ from socket import gethostname
 #     print ""
 #     quit(-1)
     
+SAMPLES_PER_SECOND = 4.0
+
 def main():
     url  = "https://metrics-api.librato.com/v1/metrics"
 
@@ -59,7 +61,7 @@ def main():
     swapmem_used    = swapmem[3]
 
     net_start    = psutil.network_io_counters()
-    time.sleep(1)
+    time.sleep(1/SAMPLES_PER_SECOND)
     net_stop     = psutil.network_io_counters()
 
 
@@ -86,8 +88,8 @@ def main():
         "CPU_Usage" : cpu_combined,
         "Physical_Memory" : phymem_used,
         "Swap_Memory" : swapmem_used,
-        "Network_In" : net_stop[1] - net_start[1],
-        "Network_out" : net_stop[0] - net_start[0]
+        "Network_In" : (net_stop[1] - net_start[1]) * SAMPLES_PER_SECOND,
+        "Network_out" : (net_stop[0] - net_start[0]) * SAMPLES_PER_SECOND
     }               
 
     gauge_count = (len(payload) - 2) / 2
