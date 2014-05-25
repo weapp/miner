@@ -3,18 +3,20 @@
     # - Publishers.RabbitPublisher: 
     #     host: 127.0.0.1
     #     queue: log_queue
-    # - Publishers.WubytesPublisher:
-    #     client_id: esf6ajof9hhvmv718jb2x0qth65qf2s
-    #     client_secret: 152wx2hbqe891kcxm1lrnovrjohhbj6
-    #     username: weap88@gmail.com
-    #     keys:
-    #         cpu: "@fields/gauges/CPU_Usage"
-    #         networkin: "@fields/gauges/Network_In"
-    #         networkout: "@fields/gauges/Network_out"
-    #         procs: "@fields/gauges/Number_of_Processes"
-    #         memory: "@fields/gauges/Physical_Memory"
-    #         swap: "@fields/gauges/Swap_Memory"
-    - Publishers.PrintPublisher
+    - Publishers.WubytesPublisher:
+        client_id: tpqr565sa0o9a6ewqlphqwtgs9okbtf
+        client_secret: iqfdx2sxi2qqruw1eid31jpwd7fj7f1
+        username: example@example.com
+        pass: monkey
+        host: http://wubytes.com
+        keys:
+            cpu: "@fields/gauges/CPU_Usage"
+            networkin: "@fields/gauges/Network_In"
+            networkout: "@fields/gauges/Network_out"
+            procs: "@fields/gauges/Number_of_Processes"
+            memory: "@fields/gauges/Physical_Memory"
+            swap: "@fields/gauges/Swap_Memory"
+    # - Publishers.PrintPublisher
     # - Publishers.ElasticPublisher
   extractors: 
     # - Extractors.Execute: 
