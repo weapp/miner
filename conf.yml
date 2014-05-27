@@ -3,41 +3,42 @@
     # - Publishers.RabbitPublisher: 
     #     host: 127.0.0.1
     #     queue: log_queue
-    - Publishers.WubytesPublisher:
-        client_id: tpqr565sa0o9a6ewqlphqwtgs9okbtf
-        client_secret: iqfdx2sxi2qqruw1eid31jpwd7fj7f1
-        username: example@example.com
-        pass: monkey
-        host: http://wubytes.com
-        keys:
-            cpu: "@fields/gauges/CPU_Usage"
-            networkin: "@fields/gauges/Network_In"
-            networkout: "@fields/gauges/Network_out"
-            procs: "@fields/gauges/Number_of_Processes"
-            memory: "@fields/gauges/Physical_Memory"
-            swap: "@fields/gauges/Swap_Memory"
-    # - Publishers.PrintPublisher
+    # - Publishers.WubytesPublisher:
+    #     client_id: tpqr565sa0o9a6ewqlphqwtgs9okbtf
+    #     client_secret: iqfdx2sxi2qqruw1eid31jpwd7fj7f1
+    #     username: example@example.com
+    #     pass: monkey
+    #     host: http://wubytes.com
+    #     keys:
+    #         cpu: "@fields/gauges/CPU_Usage"
+    #         networkin: "@fields/gauges/Network_In"
+    #         networkout: "@fields/gauges/Network_out"
+    #         procs: "@fields/gauges/Number_of_Processes"
+    #         memory: "@fields/gauges/Physical_Memory"
+    #         swap: "@fields/gauges/Swap_Memory"
+    - Publishers.PrintPublisher
     # - Publishers.ElasticPublisher
   extractors: 
-    # - Extractors.Execute: 
+    # - Extractors.Execute:
     #     type: hours
     #     exec: "j = init"
     #     eval: j
     #     interval: 1
+    #     tags:
+    #       - metrics
+    # - Extractors.Execute: 
+    #     type: pymetrics
+    #     init: "from shared.pymetrics import main as pymetrics"
+    #     eval: "pymetrics()"
+    #     interval: 1
     #     tags: 
     #       - metrics
-    - Extractors.Execute: 
-        type: pymetrics
-        init: "from shared.pymetrics import main as pymetrics"
-        eval: "pymetrics()"
-        interval: 1
-        tags: 
-          - metrics
-        filters: 
-          - Filters.MessageToFieldsFilter
+    #     filters:
+    #       - Filters.MessageToFieldsFilter
     # - Extractors.Log: 
     #     type: nginx-access
     #     path: /Users/manu/Downloads/logs/nginx.log
+    #     from: now
     #     tags: 
     #       - wadus
     #       - blau
@@ -45,15 +46,36 @@
     #     filters: 
     #       - Filters.NginxFilter
     #       - Filters.FakeTimestampFilter
-    # - Extractors.Log: 
-    #     type: rails
-    #     path: /Users/manu/projects/octo/log/development.log
-    #     tags: 
-    #       - wadus
-    #       - blau
-    #     should_line_merge: true
-    #     break_only_before: "^Started"
-    #     fake_timestamp: true
-    #     filters: 
-    #       - Filters.RailsFilter
-    #       - Filters.FakeTimestampFilter
+    - Extractors.Log: 
+        type: rails
+        path: /Users/manu/projects/octo/log/development.log
+        tags: 
+            - wadus
+            - blau
+        should_line_merge: true
+        break_only_before: "^Started"
+        fake_timestamp: true
+        filters: 
+            - Filters.RailsFilter
+            - Filters.FakeTimestampFilter
+            - Filters.AggregateFilter:
+                key: "@fields/status"
+                retentions:
+                    - "1s:60s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operation: max
+                # operation: count
+                # operation: avg
+                # operation: median
+                # operation: percentile_95
+                # operation: max
+                # operation: min
+                # query:
+                #     "@fields/status": "200"
+                tags:
+                    - "wadus"
+            - Filters.SelectFilter:
+                query:
+                    "@tags": "generated"

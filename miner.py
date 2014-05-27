@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import os
 import argparse
 from multiprocessing import Process
 
@@ -18,7 +21,9 @@ if __name__ == '__main__':
     parser.add_argument("--publisher", help="publish the string you use here", type=build_component)
     args = parser.parse_args()
 
-    conf = yaml.load(open(args.conf))
+    confpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), args.conf)
+
+    conf = yaml.load(open(confpath))
 
     if args.publisher:
         publishers=[args.publisher]

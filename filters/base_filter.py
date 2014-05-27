@@ -2,7 +2,7 @@
 
 class BaseFilter:
     def __init__(self, conf):
-        pass
+        self.conf = conf
 
     def filter(self, message):
         pass

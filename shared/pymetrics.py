@@ -44,7 +44,7 @@ from socket import gethostname
 #     print ""
 #     quit(-1)
     
-SAMPLES_PER_SECOND = 4.0
+SAMPLES_PER_SECOND = .5
 
 def main():
     url  = "https://metrics-api.librato.com/v1/metrics"
