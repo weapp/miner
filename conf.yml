@@ -17,8 +17,8 @@
     #         memory: fields.gauges.Physical_Memory
     #         swap: fields.gauges.Swap_Memory
     - Publishers.PrintPublisher:
-        query:
-            tags: generated
+        # query:
+        #     tags: generated
     # - Publishers.ElasticPublisher
   extractors: 
     # - Extractors.Execute:
@@ -61,7 +61,6 @@
             - Filters.RailsFilter
             - Filters.FakeTimestampFilter
             - Filters.AggregateFilter:
-                key: fields.status
                 retentions:
                     - "1s:60s"
                     - "60s:1d"
@@ -72,26 +71,42 @@
                 query:
                     fields.status: "200"
                 tags:
-                    - wadus
+                    - success
             - Filters.AggregateFilter:
-                key: fields.completed_time
                 retentions:
-                    - "1s:20s"
+                    - "1s:60s"
                     - "60s:1d"
                     - "1h:15d"
                     - "1m:1w"
                 operations:
                     - count
-                    - avg
-                    - median
-                    - percentile_95
-                    - percentile_95
-                    - max
-                    - min
-                # query:
-                #     fields.status: "200"
+                query:
+                    fields.status: { $gte: "400" }
                 tags:
-                    - wadus
+                    - errors
+            # - Filters.AggregateFilter:
+            #     key: fields.completed_time
+            #     retentions:
+            #         - "1s:20s"
+            #         - "60s:1d"
+            #         - "1h:15d"
+            #         - "1m:1w"
+            #     operations:
+            #         - count
+            #         - avg
+            #         - median
+            #         - percentile_95
+            #         - percentile_95
+            #         - max
+            #         - min
+            #     # query:
+            #     #     fields.status: "200"
+            #     tags:
+            #         - wadus
+            - Filters.SelectFilter:
+                query:
+                    tags: generated
             # - Filters.SelectFilter:
             #     query:
-            #         tags: generated
+            #         # fields.status: "200"
+            #         fields.status: { $gte: "400" }

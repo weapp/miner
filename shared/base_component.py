@@ -2,7 +2,7 @@ from shared.query import Query
 
 class BaseComponent:
     def __init__(self, conf):
-        self.conf = conf
+        self.conf = conf or {}
         self.query = Query(self.conf.get("query", {}))
 
     def filter(self, message):
