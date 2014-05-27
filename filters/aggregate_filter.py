@@ -29,7 +29,7 @@ class Operation:
     def __init__(self, operation):
         self.operation_name = operation
         self.operation = {
-            "count": len,
+            "count": self.len,
             "avg": self.avg,
             "median": self.median,
             "percentile_95": self.avg,
@@ -38,27 +38,33 @@ class Operation:
         }[operation]
 
     def __call__(self, values):
-        return self.operation(values)
+        self.store_values(values)
+        return self.operation()
 
-    def avg(self, values):
-        values = self.float_values(values)
-        return sum(values)/len(values)
+    def len(self):
+        return len(self.__values)
 
-    def median(self, values):
-        return np.percentile(self.float_values(values), 50)
+    def median(self):
+        return np.percentile(self.__float_values, 50)
 
-    def percentile_95(self, values):
-        return np.percentile(self.float_values(values), 95)
+    def percentile_95(self):
+        return np.percentile(self.__float_values, 95)
 
-    def max(self, values):
-        return max(self.float_values(values))
+    def max(self):
+        if self.__float_values:
+            return max(self.__float_values)
 
-    def min(self, values):
-        return min(self.float_values(values))
+    def min(self):
+        if self.__float_values:
+            return min(self.__float_values)
 
-    def avg(self, values):
-        values = self.float_values(values)
-        return sum(values)/len(values)
+    def avg(self):
+        if self.__float_values:
+            return sum(self.__float_values)/len(self.__float_values)
+
+    def store_values(self, values):
+        self.__values = values
+        self.__float_values = self.float_values(values)
 
     def float_values(self, values):
         return [float(re_d.match(v).group(1) or 0) for v in values if v is not None]
@@ -77,19 +83,16 @@ class AggregateFilter(BaseFilter):
         BaseFilter.__init__(self, conf)
         self.query = Query(self.conf.get("query"))
         self.key = Path(self.conf.get("key", "/"))
-        self.operation = Operation(self.conf.get("operation", "count"))
+        self.raw_operations = sorted(set(self.conf.get("operations", ["count"])))
+        self.operations = [Operation(op) for op in self.raw_operations]
+        self.raw_retentions = conf.get("retentions", ["10s:1w"])
+        self.retentions = [self.parse_retentions(r) for r in self.raw_retentions]
 
-        tags = ["generated", "aggregate", self.conf.get("operation")] + self.conf.get("tags", [])
-
+        tags = ["generated", "aggregate"] + self.raw_operations + self.conf.get("tags", [])
         self.hb = HashBuilder({"type": "aggregation", "tags": tags })
-
-
-        self.retentions_raw = conf.get("retentions", ["10s:1w"])
-        self.retentions = [self.parse_retentions(r) for r in self.retentions_raw]
-
         self.time_retentions = [time.time() for _ in self.retentions]
         self.values_retentions = [[] for _ in self.retentions]
-        self.historic_retentions = [[None for _ in range(persist)] for delta, persist in self.retentions]
+        self.historic_retentions = [{op: [None for _ in range(persist)] for op in self.raw_operations} for delta, persist in self.retentions]
 
     def filter(self, message):
         if self.query.match(message):
@@ -100,11 +103,12 @@ class AggregateFilter(BaseFilter):
                         self.time_retentions[i] += self.retentions[i][0]
                     self.hb.build()
                     r = self.hb.dict()
-                    r["value"] = self.operation(self.values_retentions[i])
-                    self.historic_retentions[i].pop(0)
-                    self.historic_retentions[i].append(r["value"])
+                    values = [op(self.values_retentions[i]) for op in self.operations]
+                    r["fields"] = dict(zip(self.raw_operations, values))
+                    [self.historic_retentions[i][op].pop(0) for op in self.raw_operations]
+                    [self.historic_retentions[i][op].append(r["fields"][op]) for op in self.raw_operations]
                     r["historic"] = self.historic_retentions[i]
-                    r["retentions"] = self.retentions_raw[i]
+                    r["retentions"] = self.raw_retentions[i]
                     r["values"] = self.values_retentions[i]
                     self.values_retentions[i] = []
                     yield r

@@ -10,12 +10,12 @@
     #     pass: monkey
     #     host: http://wubytes.com
     #     keys:
-    #         cpu: "fields/gauges/CPU_Usage"
-    #         networkin: "fields/gauges/Network_In"
-    #         networkout: "fields/gauges/Network_out"
-    #         procs: "fields/gauges/Number_of_Processes"
-    #         memory: "fields/gauges/Physical_Memory"
-    #         swap: "fields/gauges/Swap_Memory"
+    #         cpu: fields.gauges.CPU_Usage
+    #         networkin: fields.gauges.Network_In
+    #         networkout: fields.gauges.Network_out
+    #         procs: fields.gauges.Number_of_Processes
+    #         memory: fields.gauges.Physical_Memory
+    #         swap: fields.gauges.Swap_Memory
     - Publishers.PrintPublisher
     # - Publishers.ElasticPublisher
   extractors: 
@@ -59,23 +59,37 @@
             - Filters.RailsFilter
             - Filters.FakeTimestampFilter
             - Filters.AggregateFilter:
-                key: "fields/status"
+                key: fields.status
                 retentions:
                     - "1s:60s"
                     - "60s:1d"
                     - "1h:15d"
                     - "1m:1w"
-                operation: max
-                # operation: count
-                # operation: avg
-                # operation: median
-                # operation: percentile_95
-                # operation: max
-                # operation: min
-                # query:
-                #     "fields/status": "200"
+                operations:
+                    - count
+                query:
+                    fields.status: "200"
                 tags:
-                    - "wadus"
+                    - wadus
+            - Filters.AggregateFilter:
+                key: fields.completed_time
+                retentions:
+                    - "1s:20s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operations:
+                    - count
+                    - avg
+                    - median
+                    - percentile_95
+                    - percentile_95
+                    - max
+                    - min
+                # query:
+                #     fields.status: "200"
+                tags:
+                    - wadus
             - Filters.SelectFilter:
                 query:
-                    "tags": "generated"
+                    tags: generated

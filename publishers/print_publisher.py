@@ -34,8 +34,10 @@ def pformat(message, indent=0):
             return "%s%s" % ("  " * indent, colored(repr(message), 'magenta'))
         else:
             return "%s%s" % ("  " * indent, colored(message, 'magenta'))
-    elif isinstance(message, (int, long, float, complex)):    
+    elif isinstance(message, (int, long, complex)):    
         return "%s%s" % ("  " * indent, colored(message, 'red'))
+    elif isinstance(message, float):    
+        return "%s%s" % ("  " * indent, colored("%.2f" % message, 'red'))
     elif isinstance(message, (list, tuple)):    
         mess = [pformat(v, indent + 1) for v in message]
         n = any(True for m in mess if "\n" in m)

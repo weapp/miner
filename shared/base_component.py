@@ -1,9 +1,9 @@
-from shared.base_component import BaseComponent
+from shared.query import Query
 
-
-class BaseFilter(BaseComponent):
+class BaseComponent:
     def __init__(self, conf):
-        BaseComponent.__init__(self, conf)
+        self.conf = conf
+        self.query = Query(self.conf.get("query", {}))
 
     def filter(self, message):
         pass

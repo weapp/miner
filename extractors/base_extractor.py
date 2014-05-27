@@ -1,9 +1,9 @@
-#!/usr/bin/env python
 from shared.utils import build_components
+from shared.base_component import BaseComponent
 
-class BaseExtractor:
+class BaseExtractor(BaseComponent):
     def __init__(self, conf):
-        self.conf = conf
+        BaseComponent.__init__(self, conf)
 
     def extract(self, conf):
         if None:

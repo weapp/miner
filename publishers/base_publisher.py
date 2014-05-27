@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+from shared.base_component import BaseComponent
 
-class BasePublisher:
+class BasePublisher(BaseComponent):
     def __init__(self, conf):
-        pass
+        BaseComponent.__init__(self, conf)
 
     def publish(self, message):
         pass

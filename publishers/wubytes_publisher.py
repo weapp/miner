@@ -1,6 +1,7 @@
 from base_publisher import BasePublisher
 from pprint import pprint as pp
 from wu_client import WuClient
+from shared.path import Path
 
 def get_password(conf):
     password = conf.get("pass", None) or conf.get("password", None)
@@ -24,13 +25,9 @@ class WubytesPublisher(BasePublisher):
     def publish(self, message):
         try:
             for key, path in self.keys.iteritems():
-                value = message
-                for k in path.split("/"):
-                    value = value[k]
-
-
+                path = Path(path)
+                value = path.navigate(message)
                 print key, path, value
-
                 self.wc.update_value(key, value)
         except KeyError:
             pass
