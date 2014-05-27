@@ -3,27 +3,15 @@ from base_filter import BaseFilter
 from shared.hash_builder import HashBuilder
 from shared.query import Query
 from shared.path import Path
+from shared.utils import parse_retentions
 
 import time
 
 import re
-from math import ceil
 
 import numpy as np
 
-
-re_retention = re.compile("^(\d+)([ywdhms]):(\d+)([ywdhms])$")
 re_d = re.compile("^\s*(\d+(?:.\d+)?)")
-
-to_sec = {
-    "s" : 1,
-    "m" : 60,
-    "h" : 60 * 60,
-    "d" : 60 * 60 * 24,
-    "w" : 60 * 60 * 24 * 7,
-    "y" : 60 * 60 * 24 * 365.5,
-}
-
 
 class Operation:
     def __init__(self, operation):
@@ -71,13 +59,6 @@ class Operation:
 
 class AggregateFilter(BaseFilter):
 
-    def parse_retentions(self, retention):
-        delta, delta_unit, persist, persist_unit = re_retention.match(retention).groups()
-        delta = int(delta) * to_sec[delta_unit]
-        persist = int(persist) * to_sec[persist_unit]
-
-        return (delta, int(ceil(float(persist)/delta)))
-
 
     def __init__(self, conf):
         BaseFilter.__init__(self, conf)
@@ -86,7 +67,7 @@ class AggregateFilter(BaseFilter):
         self.raw_operations = sorted(set(self.conf.get("operations", ["count"])))
         self.operations = [Operation(op) for op in self.raw_operations]
         self.raw_retentions = conf.get("retentions", ["10s:1w"])
-        self.retentions = [self.parse_retentions(r) for r in self.raw_retentions]
+        self.retentions = [parse_retentions(r) for r in self.raw_retentions]
 
         tags = ["generated", "aggregate"] + self.raw_operations + self.conf.get("tags", [])
         self.hb = HashBuilder({"type": "aggregation", "tags": tags })

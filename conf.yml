@@ -9,14 +9,21 @@
     #     username: example@example.com
     #     pass: monkey
     #     host: http://wubytes.com
-    #     keys:
-    #         cpu: fields.gauges.CPU_Usage
-    #         networkin: fields.gauges.Network_In
-    #         networkout: fields.gauges.Network_out
-    #         procs: fields.gauges.Number_of_Processes
-    #         memory: fields.gauges.Physical_Memory
-    #         swap: fields.gauges.Swap_Memory
+    #     project:
+    #         cpu: $fields.gauges.CPU_Usage
+    #         networkin: $fields.gauges.Network_In
+    #         networkout: $fields.gauges.Network_out
+    #         procs: $fields.gauges.Number_of_Processes
+    #         memory: $fields.gauges.Physical_Memory
+    #         swap: $fields.gauges.Swap_Memory
     - Publishers.PrintPublisher:
+        project:
+            $rejectNone: true
+            avg: $historic.avg
+            count: $historic.count
+            max: $historic.max
+            min: $historic.min
+            percentile_95: $historic.percentile_95
         # query:
         #     tags: generated
     # - Publishers.ElasticPublisher
@@ -84,25 +91,25 @@
                     fields.status: { $gte: "400" }
                 tags:
                     - errors
-            # - Filters.AggregateFilter:
-            #     key: fields.completed_time
-            #     retentions:
-            #         - "1s:20s"
-            #         - "60s:1d"
-            #         - "1h:15d"
-            #         - "1m:1w"
-            #     operations:
-            #         - count
-            #         - avg
-            #         - median
-            #         - percentile_95
-            #         - percentile_95
-            #         - max
-            #         - min
-            #     # query:
-            #     #     fields.status: "200"
-            #     tags:
-            #         - wadus
+            - Filters.AggregateFilter:
+                key: fields.completed_time
+                retentions:
+                    - "1s:20s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operations:
+                    - count
+                    - avg
+                    - median
+                    - percentile_95
+                    - percentile_95
+                    - max
+                    - min
+                # query:
+                #     fields.status: "200"
+                tags:
+                    - wadus
             - Filters.SelectFilter:
                 query:
                     tags: generated

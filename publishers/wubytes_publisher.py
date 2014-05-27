@@ -12,22 +12,16 @@ def get_password(conf):
 
 class WubytesPublisher(BasePublisher):
     def __init__(self, conf):
-
-        self.keys = conf["keys"]
+        BasePublisher.__init__(self, conf)
 
         self.wc = WuClient(conf["client_id"], conf["client_secret"], conf["host"])
         if not self.wc.auth(conf["username"], get_password(conf)):
             exit()
 
-        for key in self.keys:
+        for key in self.project.project:
             self.wc.new_wu({'data': 0, 'title': key, 'slug': key})
 
     def publish(self, message):
-        try:
-            for key, path in self.keys.iteritems():
-                path = Path(path)
-                value = path.navigate(message)
-                print key, path, value
-                self.wc.update_value(key, value)
-        except KeyError:
-            pass
+        for key, value in message.iteritems():
+            print key, value
+            self.wc.update_value(key, value)

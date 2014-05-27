@@ -38,6 +38,9 @@ class HashBuilder:
         if "message" in self.data:
             if isinstance(self.data["message"], list):
                 self.data["message"] = "".join(self.data["message"])
+            elif isinstance(self.data["message"], dict):
+                self.data["fields"] = self.data["message"]
+                del self.data["message"]
         return self.data
 
     def has_data(self):
