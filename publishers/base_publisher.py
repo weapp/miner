@@ -8,7 +8,8 @@ class BasePublisher(BaseComponent):
         pass
 
     def __call__(self, message):
-        self.publish(message)
+        if self.query.match(message):
+            self.publish(message)
 
     def close(self):
         pass

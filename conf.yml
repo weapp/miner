@@ -16,7 +16,9 @@
     #         procs: fields.gauges.Number_of_Processes
     #         memory: fields.gauges.Physical_Memory
     #         swap: fields.gauges.Swap_Memory
-    - Publishers.PrintPublisher
+    - Publishers.PrintPublisher:
+        query:
+            tags: generated
     # - Publishers.ElasticPublisher
   extractors: 
     # - Extractors.Execute:
@@ -90,6 +92,6 @@
                 #     fields.status: "200"
                 tags:
                     - wadus
-            - Filters.SelectFilter:
-                query:
-                    tags: generated
+            # - Filters.SelectFilter:
+            #     query:
+            #         tags: generated
