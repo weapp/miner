@@ -10,12 +10,12 @@
     #     pass: monkey
     #     host: http://wubytes.com
     #     keys:
-    #         cpu: "@fields/gauges/CPU_Usage"
-    #         networkin: "@fields/gauges/Network_In"
-    #         networkout: "@fields/gauges/Network_out"
-    #         procs: "@fields/gauges/Number_of_Processes"
-    #         memory: "@fields/gauges/Physical_Memory"
-    #         swap: "@fields/gauges/Swap_Memory"
+    #         cpu: "fields/gauges/CPU_Usage"
+    #         networkin: "fields/gauges/Network_In"
+    #         networkout: "fields/gauges/Network_out"
+    #         procs: "fields/gauges/Number_of_Processes"
+    #         memory: "fields/gauges/Physical_Memory"
+    #         swap: "fields/gauges/Swap_Memory"
     - Publishers.PrintPublisher
     # - Publishers.ElasticPublisher
   extractors: 
@@ -59,7 +59,7 @@
             - Filters.RailsFilter
             - Filters.FakeTimestampFilter
             - Filters.AggregateFilter:
-                key: "@fields/status"
+                key: "fields/status"
                 retentions:
                     - "1s:60s"
                     - "60s:1d"
@@ -73,9 +73,9 @@
                 # operation: max
                 # operation: min
                 # query:
-                #     "@fields/status": "200"
+                #     "fields/status": "200"
                 tags:
                     - "wadus"
             - Filters.SelectFilter:
                 query:
-                    "@tags": "generated"
+                    "tags": "generated"

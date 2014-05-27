@@ -18,12 +18,12 @@ class ElasticPublisher(BasePublisher):
         id_ = int(id_, 16)
 
         message["_score"] = 1
-        message["message"] = message.pop("@message", "")
-        message["@version"] = 1
-        message["host"] = message.pop("@source_host", "")
+        message["message"] = message.pop("message", "")
+        message["version"] = 1
+        message["host"] = message.pop("source_host", "")
 
         
-        index = "logstash-%s" % message["@timestamp"][0:10].replace("-",".")
+        index = "logstash-%s" % message["timestamp"][0:10].replace("-",".")
 
         # print "-" * 40
         # pprint (id_)

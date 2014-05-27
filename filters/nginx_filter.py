@@ -21,8 +21,8 @@ class NginxFilter(RegexFilter):
             {"regex": """^(?P<ip>.+) (?P<domain>.+) - - \[%s] "(?P<verb>.+?) (?P<path>.+?) (?P<http_version>.+?)" (?P<status>.+?) (?P<body_bytes_sent>.+?) "(?P<http_referer>.+?)" "(?P<user_agent>.+) Completed in:(?P<nginx_response_time>.+)""" % gp.HTTPDATE_},
         ]
 
-        fields = message.setdefault("@fields", {})
-        for d in self.parse(message["@message"]):
+        fields = message.setdefault("fields", {})
+        for d in self.parse(message["message"]):
             self.add_fields(fields, self.compact_field_value(d))
         
         fields["timestamp"] = gp.extract_HTTPDATE(fields)

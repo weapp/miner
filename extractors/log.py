@@ -14,7 +14,7 @@ class Log(BaseExtractor):
         if merge:
             before = re.compile(before)
 
-        value = HashBuilder({"@type": conf.get("type", "log"),"@source_path": conf["path"], "@tags": conf.get("tags", [])}, fake_timestamp=conf["fake_timestamp"])
+        value = HashBuilder({"type": conf.get("type", "log"),"source_path": conf["path"], "tags": conf.get("tags", [])}, fake_timestamp=conf["fake_timestamp"])
 
         touch(conf["path"])
 

@@ -5,7 +5,7 @@ import time
 
 class Execute(BaseExtractor):
     def extract(self, conf):
-        value = HashBuilder({"@type": conf.get("type", "exec"),"@tags": conf.get("tags", [])})
+        value = HashBuilder({"type": conf.get("type", "exec"),"tags": conf.get("tags", [])})
         if "init" in conf:
             exec(conf["init"])
         while 1:

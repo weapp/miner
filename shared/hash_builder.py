@@ -18,8 +18,8 @@ def get_mac():
 class HashBuilder:
     def __init__(self, shared, **opts):
         self.shared = {
-            "@source_mac" : get_mac(),
-            "@source_host" : platform.node()
+            "source_mac" : get_mac(),
+            "source_host" : platform.node()
         }
         self.shared.update(shared)
         self.fake_timestamp = opts.get("fake_timestamp", False)
@@ -27,17 +27,17 @@ class HashBuilder:
 
     def build(self, data=None):
         self.data = self.shared.copy()
-        self.data.setdefault("@timestamp", '{0}{1:+06.2f}'.format(datetime.datetime.now().isoformat(), float(time.timezone) / 3600))
+        self.data.setdefault("timestamp", '{0}{1:+06.2f}'.format(datetime.datetime.now().isoformat(), float(time.timezone) / 3600))
         if data is not None:
-            self.data["@message"] = data
+            self.data["message"] = data
 
     def log(self, value):
-        self.data.setdefault("@message", []).append(unicode(value))
+        self.data.setdefault("message", []).append(unicode(value))
 
     def dict(self):
-        if "@message" in self.data:
-            if isinstance(self.data["@message"], list):
-                self.data["@message"] = "".join(self.data["@message"])
+        if "message" in self.data:
+            if isinstance(self.data["message"], list):
+                self.data["message"] = "".join(self.data["message"])
         return self.data
 
     def has_data(self):

@@ -81,7 +81,7 @@ class AggregateFilter(BaseFilter):
 
         tags = ["generated", "aggregate", self.conf.get("operation")] + self.conf.get("tags", [])
 
-        self.hb = HashBuilder({"@type": "aggregation", "@tags": tags })
+        self.hb = HashBuilder({"type": "aggregation", "tags": tags })
 
 
         self.retentions_raw = conf.get("retentions", ["10s:1w"])
@@ -100,12 +100,12 @@ class AggregateFilter(BaseFilter):
                         self.time_retentions[i] += self.retentions[i][0]
                     self.hb.build()
                     r = self.hb.dict()
-                    r["@value"] = self.operation(self.values_retentions[i])
+                    r["value"] = self.operation(self.values_retentions[i])
                     self.historic_retentions[i].pop(0)
-                    self.historic_retentions[i].append(r["@value"])
-                    r["@historic"] = self.historic_retentions[i]
-                    r["@retentions"] = self.retentions_raw[i]
-                    r["@values"] = self.values_retentions[i]
+                    self.historic_retentions[i].append(r["value"])
+                    r["historic"] = self.historic_retentions[i]
+                    r["retentions"] = self.retentions_raw[i]
+                    r["values"] = self.values_retentions[i]
                     self.values_retentions[i] = []
                     yield r
 

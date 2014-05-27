@@ -25,8 +25,8 @@ class RailsFilter(RegexFilter):
         ]
 
 
-        fields = message.setdefault("@fields", {})
-        for d in self.parse(message["@message"]):
+        fields = message.setdefault("fields", {})
+        for d in self.parse(message["message"]):
             self.add_fields(fields, self.compact_field_value(d))
 
         yield message
