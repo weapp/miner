@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import yaml
 import json
 from pprint import pprint
@@ -18,7 +20,14 @@ def pp(message, indent=0):
     print pformat(message, indent)
 
 def pformat(message, indent=0):
-    if isinstance(message, dict):
+    if isinstance(message, bool):
+        return message
+    elif message is None:
+        return ""
+        # return colored("Ø", 'cyan')
+    elif message in ["",[],{},tuple()]:
+        return "%s%s" % ("  " * indent, colored(repr(message), 'yellow'))
+    elif isinstance(message, dict):
         r = []
         for k, v in sorted(message.iteritems()):
             key = "%s%s:" % ("  " * indent, colored(k, 'green'))
