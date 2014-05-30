@@ -7,6 +7,10 @@ class Path:
         for k in self.path:
             if k in value:
                 value = value[k]
+            elif k == "$last":
+                value = value[-1]
+            elif k == "$first":
+                value = value[0]
             else:
                 return None
         return value
