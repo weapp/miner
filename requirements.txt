@@ -4,3 +4,4 @@ pika
 pyyaml
 termcolor
 psutil
+pygeoip
