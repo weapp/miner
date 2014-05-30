@@ -17,7 +17,8 @@ class NginxFilter(RegexFilter):
     def filter(self, message):
         self.regexps = [
             # {"regex": """^(?P<ip>.+) (?P<domain>.+) - - \[(?P<nginx_timestamp>.+)] "(?P<verb>.+?) (?P<path>.+?) (?P<http_version>.+?)" (?P<status>.+?) (?P<body_bytes_sent>.+?) "(?P<http_referer>.+?)" "(?P<user_agent>.+) Completed in:(?P<nginx_response_time>.+)"""},
-            {"regex": """^(?P<ip>.+) (?P<domain>.+) - - \[%s] "(?P<verb>.+?) (?P<path>.+?) (?P<http_version>.+?)" (?P<status>.+?) (?P<body_bytes_sent>.+?) "(?P<http_referer>.+?)" "(?P<user_agent>.+) Completed in:(?P<nginx_response_time>.+)""" % gp.HTTPDATE_},
+            # {"regex": """^(?P<ip>.+) (?P<domain>.+) - - \[%s] "(?P<verb>.+?) (?P<path>.+?) (?P<http_version>.+?)" (?P<status>.+?) (?P<body_bytes_sent>.+?) "(?P<http_referer>.+?)" "(?P<user_agent>.+) Completed in:(?P<nginx_response_time>.+)""" % gp.HTTPDATE_},
+            {"regex": """^(?:(?P<machine>.+): )?(?P<ip>.+) (?P<domain>.+) - - \[%s] "(?P<verb>.+?) (?P<path>.+?) (?P<http_version>.+?)" (?P<status>.+?) (?P<body_bytes_sent>.+?) "(?P<http_referer>.+?)" "(?P<user_agent>.+) Completed in:(?P<nginx_response_time>.+)""" % gp.HTTPDATE_},
         ]
 
         fields = message.setdefault("fields", {})
