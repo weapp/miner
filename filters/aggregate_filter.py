@@ -65,7 +65,7 @@ class AggregateFilter(BaseFilter):
     def __init__(self, conf):
         BaseFilter.__init__(self, conf)
         self.query = Query(self.conf.get("query"))
-        self.key = Path(self.conf.get("key", "/"))
+        self.key = Path(self.conf.get("key", ".").strip("$"))
         self.raw_operations = sorted(set(self.conf.get("operations", ["count"])))
         self.operations = [Operation(op) for op in self.raw_operations]
         self.raw_retentions = conf.get("retentions", ["10s:1w"])
