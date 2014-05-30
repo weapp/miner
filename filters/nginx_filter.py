@@ -3,7 +3,7 @@
 from regex_filter import RegexFilter
 import re
 
-import lib.grok_patterns as gp
+import shared.grok_patterns as gp
 
 from dateutil import parser as date_time_parser
 
@@ -13,7 +13,6 @@ class NginxFilter(RegexFilter):
 
     def __init__(self, conf):
         RegexFilter.__init__(self, conf)
-        self.i = 4
 
     def filter(self, message):
         self.regexps = [
