@@ -33,10 +33,12 @@ class Operation:
         return len(self.__values)
 
     def median(self):
-        return np.percentile(self.__float_values, 50)
+        if self.__float_values:
+            return np.percentile(self.__float_values, 50)
 
     def percentile_95(self):
-        return np.percentile(self.__float_values, 95)
+        if self.__float_values:
+            return np.percentile(self.__float_values, 95)
 
     def max(self):
         if self.__float_values:
@@ -55,7 +57,7 @@ class Operation:
         self.__float_values = self.float_values(values)
 
     def float_values(self, values):
-        return [float(re_d.match(v).group(1) or 0) for v in values if v is not None]
+        return [float(re_d.match(v).group(1)) for v in values if v is not None and re_d.match(v).group(1)]
 
 class AggregateFilter(BaseFilter):
 
