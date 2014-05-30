@@ -9,7 +9,8 @@ class BasePublisher(BaseComponent):
 
     def __call__(self, message):
         if self.query.match(message):
-            message = self.project.transform(message)
+            if self.project:
+                message = self.project.transform(message)
             if message is not None:
                 self.publish(message)
 
