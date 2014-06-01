@@ -2,6 +2,8 @@ import re
 
 from math import ceil
 
+from path import Path
+
 _camel_pat = re.compile(r'([A-Z])')
 _under_pat = re.compile(r'_([a-z])')
 
@@ -53,3 +55,22 @@ def parse_retentions(retention):
     persist = parse_time(persist)
     
     return (delta, int(ceil(float(persist)/delta)))
+
+def apply_envs(conf, environ):
+    if isinstance(conf, basestring):
+        if conf.startswith("$!"):
+            path = Path(conf[2:])
+            if path.exist(environ):
+                return path.navigate(environ)
+            else:
+                text = "%s: " % conf[2:]
+                return raw_input(text)[:-1]
+        else:
+            return conf
+    elif isinstance(conf, dict):
+        for key, value in conf.iteritems():
+            conf[key] = apply_envs(value, environ)
+        return conf
+    if isinstance(conf, list):
+        return [apply_envs(v, environ) for v in conf]
+    return conf

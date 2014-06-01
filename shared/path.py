@@ -15,5 +15,23 @@ class Path:
                 return None
         return value
 
+    def exist(self, value):
+        for k in self.path:
+            if k in value:
+                value = value[k]
+            elif k == "$last":
+                if value:
+                    value = value[-1]
+                else:
+                    return False
+            elif k == "$first":
+                if value:
+                    value = value[0]
+                else:
+                    return False
+            else:
+                return False
+        return True
+
     def __str__(self):
         return "<Path %s>" % self.raw_path
