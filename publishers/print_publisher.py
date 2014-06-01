@@ -21,7 +21,7 @@ def pp(message, indent=0):
 
 def pformat(message, indent=0):
     if isinstance(message, bool):
-        return message
+        return colored(message, 'cyan')
     elif message is None:
         return ""
         # return colored("Ø", 'cyan')
