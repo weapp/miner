@@ -1,0 +1,11 @@
+---
+  publishers:
+    - Publishers.PrintPublisher:
+        project:
+            shards: $fields._shards
+            river: $fields.indices._river.shards.0.$first
+  extractors: 
+    - Extractors.WebExtractor:
+        url: http://localhost:9200/_status
+        json: true
+

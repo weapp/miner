@@ -1,0 +1,86 @@
+---
+  publishers:
+    - Publishers.PrintPublisher:
+        project:
+            _title_: $tags.$last
+            h:
+                $rejectNone: true
+                avg: $historic.avg
+                count: $historic.count
+                max: $historic.max
+                min: $historic.min
+                percentile_95: $historic.percentile_95
+            f:
+                $rejectNone: true
+                avg: $fields.avg
+                count: $fields.count
+                max: $fields.max
+                min: $fields.min
+                percentile_95: $fields.percentile_95
+        query:
+            tags: generated
+            # retentions: "10s:60s"
+
+  extractors: 
+    - Extractors.Log: 
+        type: rails
+        path: /Users/manu/projects/octo/log/development.log
+        should_line_merge: true
+        break_only_before: "^Started"
+        fake_timestamp: true
+        filters: 
+            - Filters.RailsFilter
+            - Filters.FakeTimestampFilter
+            # Success Request
+            - Filters.AggregateFilter:
+                retentions:
+                    - "1s:60s"
+                    - "10s:60s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operations:
+                    - count
+                query:
+                    fields.status: "200"
+                tags:
+                    - success
+            # Failed Request
+            - Filters.AggregateFilter:
+                retentions:
+                    - "1s:60s"
+                    - "10s:60s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operations:
+                    - count
+                query:
+                    fields.status: { $gte: "500" }
+                tags:
+                    - errors
+            # Render Time Statistics
+            - Filters.AggregateFilter:
+                key: $fields.completed_time
+                retentions:
+                    - "1s:20s"
+                    - "10s:60s"
+                    - "60s:1d"
+                    - "1h:15d"
+                    - "1m:1w"
+                operations:
+                    - count
+                    - avg
+                    - median
+                    - percentile_95
+                    - percentile_95
+                    - max
+                    - min
+                # query:
+                #     fields.status: "200"
+                tags:
+                    - times
+            # Reject Original Lines
+            - Filters.SelectFilter:
+                query:
+                    tags: generated

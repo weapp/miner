@@ -1,0 +1,45 @@
+---
+  publishers:
+    - Publishers.WebPublisher:
+        url: "http://localhost:4567/{_title_}"
+        verb: post
+        json: true
+        data:
+            $rejectNone: true
+            median: $historic.median
+            count: $historic.count
+            max: $historic.max
+            min: $historic.min
+            percentile_95: $historic.percentile_95
+        project:
+            _title_: $tags.$last
+            historic:
+                $rejectNone: true
+                median: $historic.median
+                count: $historic.count
+                max: $historic.max
+                min: $historic.min
+                percentile_95: $historic.percentile_95
+        query:
+            tags: generated
+
+  extractors: 
+    - Extractors.Log: 
+        type: rails
+        path: /Users/manu/projects/octo/log/development.log
+        should_line_merge: true
+        break_only_before: "^Started"
+        fake_timestamp: true
+        filters: 
+            - Filters.RailsFilter
+            - Filters.AggregateFilter:
+                key: fields.completed_time
+                retentions:
+                    - "1s:30s"
+                operations:
+                    - median
+                    - percentile_95
+                    - max
+                    - min
+                tags:
+                    - times

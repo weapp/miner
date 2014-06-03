@@ -1,0 +1,21 @@
+---
+  publishers:
+    - Publishers.PrintPublisher:
+        project:
+            ["$fields.geoip.latitude","$fields.geoip.longitude"]
+    - Publishers.WebPublisher:
+        url: "http://localhost:4567/map"
+        verb: post
+        json: true
+        data:
+            lat: $fields.geoip.latitude
+            lon: $fields.geoip.longitude
+
+  extractors: 
+    - Extractors.Log: 
+        type: nginx-access
+        # path: /Users/manu/Downloads/logs/nginx.log
+        path: ../nginx.log
+        filters: 
+          - Filters.NginxFilter
+          - Filters.GeoipFilter

@@ -1,0 +1,32 @@
+---
+  publishers:
+    - Publishers.WubytesPublisher:
+        client_id: $!wubytes.client_id
+        client_secret: $!wubytes.client_secret
+        username: $!wubytes.username
+        pass: $!wubytes.pass
+        # host: http://wubytes.com
+        host: http://localhost:9292
+        project:
+            cpu: $fields.gauges.CPU_Usage
+            networkin: $fields.gauges.Network_In
+            networkout: $fields.gauges.Network_out
+            procs: $fields.gauges.Number_of_Processes
+            memory: $fields.gauges.Physical_Memory
+            swap: $fields.gauges.Swap_Memory
+    # - Publishers.PrintPublisher:
+    #     project:
+    #         cpu: $fields.gauges.CPU_Usage
+    #         networkin: $fields.gauges.Network_In
+    #         networkout: $fields.gauges.Network_out
+    #         procs: $fields.gauges.Number_of_Processes
+    #         memory: $fields.gauges.Physical_Memory
+    #         swap: $fields.gauges.Swap_Memory
+  extractors: 
+    - Extractors.Execute: 
+        type: pymetrics
+        init: "from shared.pymetrics import main as pymetrics"
+        eval: "pymetrics()"
+        interval: 1
+        tags: 
+          - metrics

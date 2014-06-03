@@ -1,0 +1,17 @@
+---
+  publishers:
+    - Publishers.PrintPublisher:
+  extractors: 
+    - Extractors.Log: 
+        type: nginx-access
+        user: root
+        host: wubytes.com
+        path: /var/log/nginx/access.log
+        from: now
+        tags: 
+          - wadus
+          - blau
+        fake_timestamp: true
+        filters: 
+          - Filters.NginxFilter
+          - Filters.FakeTimestampFilter

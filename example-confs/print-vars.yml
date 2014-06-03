@@ -1,0 +1,7 @@
+---
+  publishers:
+    - Publishers.PrintPublisher:
+        project:
+            literal: literal
+            var: $key
+            environ: $!environ
